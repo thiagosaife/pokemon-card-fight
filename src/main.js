@@ -6,11 +6,23 @@ import store from '@/store';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import '@/assets/scss/custom.scss';
+
+const EventBus = new Vue();
 
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
+
+Vue.mixin({
+  data() {
+    return {
+      EventBus,
+      logoUrl: 'http://www.pngplay.com/wp-content/uploads/2/Pokeball-PNG-Photo-Image.png',
+    };
+  },
+});
 
 new Vue({
   router,

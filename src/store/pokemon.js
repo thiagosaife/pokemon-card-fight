@@ -3,31 +3,18 @@ const axios = require('axios');
 
 export default {
   state: {
-    generation: {},
+    pokeList1: [],
     pokemon: {},
   },
   getters: {
-    getGeneration: (state) => state.generation,
-    getPokemon: (state) => state.pokemon,
+    PokeList1: (state) => state.pokeList1,
   },
   actions: {
-    Generation({ commit }, generation) {
-      return new Promise((resolve, reject) => {
-        axios.get(`${path}generation/${generation}`)
-          .then((res) => {
-            commit('setGeneration', res.data);
-            resolve(res.data);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
     Pokemon({ commit }, pokemon) {
       return new Promise((resolve, reject) => {
         axios.get(`${path}pokemon/${pokemon}`)
           .then((res) => {
-            commit('setPokemon', res.data);
+            commit('setPokeList', res.data);
             resolve(res.data);
           })
           .catch((err) => {
@@ -37,11 +24,11 @@ export default {
     },
   },
   mutations: {
-    setGeneration(state, generation) {
-      state.generation = generation;
+    setEmptyPokeList(state) {
+      state.pokeList1 = [];
     },
-    setPokemon(state, pokemon) {
-      state.pokemon = pokemon;
+    setPokeList(state, pokemon) {
+      state.pokeList1.push(pokemon);
     },
   },
 };
