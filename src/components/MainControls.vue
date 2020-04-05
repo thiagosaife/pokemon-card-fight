@@ -16,6 +16,7 @@
           <b-button
             type="submit"
             class="mt-3 float-left">Procurar</b-button>
+          <b-spinner v-if="loadingSearch" class="spinner float-left" type="grow" label="Spinning" />
         </b-form>
       </b-col>
       <b-col cols="6">
@@ -31,41 +32,84 @@
               variant="success"
               type="button"
               class="mt-3 float-left" @click="createHand">Sortear mão</b-button>
+            <b-button
+              v-if="PokeList1.length"
+              variant="danger"
+              @click="clearHand()"
+              type="button"
+              class="ml-1 mt-3 float-left">Limpar</b-button>
+            <b-spinner v-if="loadingHand" class="spinner float-left" type="grow" label="Spinning" />
           </b-col>
           <b-col cols="6" class="p-1">
-            <b-input-group :prepend="minRange" :append="maxRange" class="mt-3">
+            <b-input-group :prepend="`${getMinRange}`" :append="`${getMaxRange}`" class="mt-3">
               <b-form-input
                 v-model="range"
                 type="range"
-                :min="minRange"
-                :max="maxRange"></b-form-input>
+                :min="getMinRange"
+                :max="getMaxRange" />
             </b-input-group>
-            <p class="p-1">{{ range }} Pokémons</p>
+            <p class="p-1">
+              Quantidade de cartas: {{ range }} Pokémons
+              <small>Padrão: {{ defaulRange }} cartas</small>
+            </p>
           </b-col>
         </b-row>
+      </b-col>
+    </b-row>
+    <b-row v-if="PokeList1.length">
+      <b-col cols="12">
+        <b-button
+          variant="warning"
+          type="button"
+          class="mt-3 float-left" @click="stackCards">
+            {{ isStackedCards
+              ? `Ver todas (${PokeList1.length})` : `Empilhar cartas (${PokeList1.length})` }}
+            <i class="material-icons button-icon">style</i>
+          </b-button>
       </b-col>
     </b-row>
   </b-col>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'MainControls',
   data() {
     return {
       alert: false,
+      defaulRange: 7,
       hand: 0,
-      maxRange: '12',
-      minRange: '1',
+      loadingHand: false,
+      loadingSearch: false,
       name: '',
-      range: 7,
     };
   },
+  created() {
+    this.EventBus.$on('setName', (name) => {
+      this.name = this.getCapitalizedText(name);
+    });
+  },
   computed: {
+    ...mapGetters([
+      'getCardInfo',
+      'getMaxRange',
+      'getMinRange',
+      'getRange',
+      'isStackedCards',
+      'PokeList1',
+    ]),
     getAlertText() {
       return `Sua busca por "${this.name}" não retornou nenhum resultado. Tente consultar a lista de Ids no botão abaixo.`;
+    },
+    range: {
+      get() {
+        return this.getRange;
+      },
+      set(range) {
+        this.setRange(range);
+      },
     },
   },
   methods: {
@@ -73,17 +117,30 @@ export default {
       'Pokemon',
     ]),
     ...mapMutations([
+      'setCardIndex',
+      'setCardInfo',
       'setEmptyPokeList',
+      'setModalVisibility',
+      'setRange',
+      'setStackedCards',
     ]),
+    clearHand() {
+      this.setEmptyPokeList();
+    },
     createHand() {
       this.alert = false;
+      this.loadingHand = true;
+      this.name = '';
       this.setEmptyPokeList();
       const range = +this.range + 1;
       for (let i = 1; i < range; i += 1) {
-        const id = Math.floor(Math.random() * 890) + 1;
-        this.Pokemon(id)
-          .then((res) => console.log('res =>', res))
+        const name = Math.floor(Math.random() * 890) + 1;
+        this.Pokemon({ name, isSearch: false })
+          .then(() => {
+            this.loadingHand = false;
+          })
           .catch((err) => {
+            this.loadingHand = false;
             const error = { ...err };
             if (error.response.status === 404) {
               this.randomizeCall();
@@ -95,9 +152,14 @@ export default {
       window.open('https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number');
     },
     randomizeCall() {
-      const id = Math.floor(Math.random() * 890) + 1;
-      this.Pokemon(id)
+      this.loadingHand = true;
+      const name = Math.floor(Math.random() * 890) + 1;
+      this.Pokemon({ name, isSearch: false })
+        .then(() => {
+          this.loadingHand = false;
+        })
         .catch((err) => {
+          this.loadingHand = false;
           const error = { ...err };
           if (error.response.status === 404) {
             this.randomizeCall();
@@ -107,15 +169,28 @@ export default {
     searchPokemon() {
       if (!this.name) return;
       this.alert = false;
-      this.setEmptyPokeList();
+      this.loadingSearch = true;
       let name = this.name.toLowerCase();
       if (!isNaN(name)) {
         name = parseInt(name, 10);
       }
-      this.Pokemon(name)
+      this.Pokemon({ name, isSearch: true })
+        .then(() => {
+          this.loadingSearch = false;
+          this.toggleModal();
+        })
         .catch(() => {
           this.alert = true;
+          this.loadingSearch = false;
         });
+    },
+    stackCards() {
+      this.setStackedCards();
+    },
+    toggleModal() {
+      this.setCardIndex(0);
+      this.setCardInfo(this.getCardInfo);
+      this.setModalVisibility(true);
     },
   },
   watch: {
