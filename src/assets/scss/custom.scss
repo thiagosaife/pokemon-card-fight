@@ -1,8 +1,114 @@
+
+.accordion-item {
+	a {
+		font-size: 14px;
+		padding: 0;
+	}
+	ul {
+		margin-left: -35px;
+		list-style: none;
+		p {
+			color: #6c757d;
+			font-size: 14px;
+			font-weight: bold;
+			margin-left: -5px;
+			margin-bottom: -15px;
+		}
+	}
+	.extra-info {
+		line-height: 15px;
+	}
+}
+
+.badge-icon {
+	position: relative;
+	font-size: 13px !important;
+	top: 2px;
+}
+
+.badge-tip {
+	height: 20px;
+	width: 40px;
+	background-color: transparent;
+	border-color: transparent;
+	box-shadow: none;
+	span {
+		font-size: 13px;
+	}
+}
+
+.button-header {
+	line-height: 1;
+	span {
+		font-size: 13px;
+	}
+}
+
+.label {
+	font-size: 13px;
+}
+
+.image-shadow {
+  -webkit-filter: drop-shadow(2px 2px 2px #6c757d);
+  filter: drop-shadow(2px 2px 2px #6c757d);
+}
+
+.material-icons {
+	font-size: 15px;
+	&.button-icon {
+		position: relative;
+		padding-left: 5px;
+	}
+	&.header-icon {
+		position: absolute;
+		right: 20px;
+		top: 20px;
+	}
+}
+
+.modal-container {
+  z-index: 99999;
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 750px;
+}
+
+.modal-header, .modal-footer {
+	display: none;
+}
+
+.modal-backdrop {
+	opacity: 0.7;
+}
 .poke-ball {
+	height: 30px;
+	width: auto;
+}
+
+.poke-mini {
+	position: absolute;
+	right: 0;
 	height: 50px;
 	width: auto;
 }
 
 .pokemon, .tip {
 	cursor: pointer;
+}
+
+.spinner {
+	margin-left: 10px;
+	margin-top: 20px;
+}
+
+.tooltip {
+	-webkit-filter: drop-shadow(2px 2px 2px #3e4042);
+  filter: drop-shadow(2px 2px 2px #3e4042);
+}
+
+.tooltip-inner {
+	font-size: 12px;
 }

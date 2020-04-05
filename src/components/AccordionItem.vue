@@ -1,30 +1,36 @@
 <template>
   <b-card
     v-if="arrayInfo.length"
-    no-body class="mb-1">
+    no-body class="mb-1 accordion-item">
     <b-card-header header-tag="header" class="p-1" role="tab">
       <b-button block href="#"
-        v-b-toggle="`accordion-${type}-${cardIndex}`"
+        v-b-toggle="isModal
+          ? `accordion-modal-${type}-${cardIndex}` : `accordion-${type}-${cardIndex}`"
         variant="light">
-        {{ title }} ({{ arrayInfo.length }})
+        {{ title }} <span v-if="showLength">({{ arrayInfo.length }})</span>
       </b-button>
     </b-card-header>
     <b-collapse
-      :id="`accordion-${type}-${cardIndex}`"
+      :id="isModal
+       ? `accordion-modal-${type}-${cardIndex}` : `accordion-${type}-${cardIndex}`"
       accordion="accordion"
       role="tabpanel">
       <b-card-body>
         <b-card-text v-for="(item, index) in arrayInfo"
           :key="index">
-          <p class="text-left mb-0">
-              {{
-                item.name ?
-                  getCapitalizedText(item.name) : getCapitalizedText(item[type].name)
-              }}
-          </p>
+          <ul>
+            <li class="text-left">
+              <p>
+                {{
+                  item.name ?
+                    getCapitalizedText(item.name) : getCapitalizedText(item[type].name)
+                }}
+              </p>
+            </li>
+          </ul>
           <div v-if="extraInfo.length">
             <p
-              class="mb-0 text-left"
+              class="mb-0 text-left extra-info"
               v-for="(info, index) in extraInfo"
               :key="index">
                 <small>
@@ -55,6 +61,16 @@ export default {
       type: Array,
       required: false,
     },
+    isModal: {
+      default: () => false,
+      type: Boolean,
+      required: false,
+    },
+    showLength: {
+      default: () => true,
+      type: Boolean,
+      required: false,
+    },
     title: {
       type: String,
       required: true,
@@ -62,11 +78,6 @@ export default {
     type: {
       type: String,
       required: true,
-    },
-  },
-  methods: {
-    getCapitalizedText(text) {
-      return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
     },
   },
 };
