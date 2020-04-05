@@ -13,6 +13,7 @@ export default {
     range: 7,
     showModal: false,
     stackedCards: false,
+    uuid: '',
   },
   getters: {
     getCardIndex: (state) => state.cardIndex,
@@ -33,7 +34,7 @@ export default {
           .then((res) => {
             resolve(res.data);
             if (isSearch) {
-              commit('setCardInfo', res.data);
+              commit('setCardInfo', { cardInfo: res.data, isSearch });
               return;
             }
             commit('addToPokeList', res.data);
@@ -49,17 +50,25 @@ export default {
       const parsedPokemon = JSON.parse(JSON.stringify(pokemon));
       const uuid = uuidv4();
       Object.assign(parsedPokemon, { uuid });
+      state.uuid = parsedPokemon.uuid;
       state.pokeList1.unshift(parsedPokemon);
     },
-    removeFromPokeList(state, pokemon) {
-      const { uuid } = pokemon;
+    removeFromPokeList(state, uuid) {
       const pokeToRemove = state.pokeList1.findIndex((item) => item.uuid === uuid);
       state.pokeList1.splice(pokeToRemove, 1);
     },
     setCardIndex(state, cardIndex) {
       state.cardIndex = cardIndex;
     },
-    setCardInfo(state, cardInfo) {
+    setCardInfo(state, pokemon) {
+      const parsedPokemon = JSON.parse(JSON.stringify(pokemon));
+      const { cardInfo } = parsedPokemon;
+      const { isSearch } = parsedPokemon;
+      const { uuid } = cardInfo;
+      if (!isSearch && !uuid) {
+        const stateUuid = state.uuid;
+        Object.assign(cardInfo, { uuid: stateUuid });
+      }
       state.cardInfo = cardInfo;
     },
     setEmptyPokeList(state) {
