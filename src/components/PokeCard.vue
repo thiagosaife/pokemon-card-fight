@@ -2,7 +2,7 @@
   <b-card
     no-body class="overflow-hidden">
     <b-card-header
-      @click="toggleModal(cardInfo, cardIndex)"
+      @click="isModal ? null : toggleModal(cardInfo, cardIndex)"
       class="text-left"
       :class="isModal ? '' : 'tip'">
       <b-badge
@@ -19,11 +19,11 @@
         class="material-icons header-icon">open_in_new</i>
       <b-button
         v-if="isModal"
-        @click="removeFromHand()"
+        @click="canRemove ? removeFromHand() : null"
         variant="danger"
         :title="canRemove
-          ? `Remover 1 ${ getCapitalizedText(cardInfo.name) } da mão`
-          : 'Você já removeu esta carta.'"
+          ? `Remover esta carta ${ getCapitalizedText(cardInfo.name) } da mão`
+          : `Você não pode remover esta carta ${ getCapitalizedText(cardInfo.name) }.`"
         v-b-tooltip.hover
         class="float-right mr-2 button-header">
         <span>
@@ -33,7 +33,7 @@
       </b-button>
       <b-button
         v-if="isModal"
-        @click="addToHand()"
+        @click="canAdd ? addToHand() : null"
         variant="success"
         :title="canAdd
           ? `Adicionar 1 ${ getCapitalizedText(cardInfo.name) } à mão`
@@ -236,8 +236,9 @@ export default {
       'setModalVisibility',
     ]),
     addToHand() {
-      if (!this.canAdd) return;
-      this.addToPokeList(this.cardInfo);
+      const { cardInfo } = this;
+      this.addToPokeList(cardInfo);
+      this.setCardInfo({ cardInfo });
     },
     getVariantion(baseStat) {
       const variations = [
@@ -255,13 +256,12 @@ export default {
       return variation;
     },
     removeFromHand() {
-      if (!this.canRemove) return;
-      this.removeFromPokeList(this.cardInfo);
+      const { uuid } = this.cardInfo;
+      this.removeFromPokeList(uuid);
     },
     toggleModal(cardInfo, cardIndex) {
-      if (this.isModal) return;
       this.setCardIndex(cardIndex);
-      this.setCardInfo(cardInfo);
+      this.setCardInfo({ cardInfo });
       this.setModalVisibility(true);
       this.setName(cardInfo.name);
     },

@@ -28,11 +28,7 @@
           :target="`tooltip-cog-stacked-${index}`" triggers="hover">
           <b-row>
             <b-badge
-              @click="addToHand(card)"
-              :title="canAdd
-                ? `Adicionar 1 ${ getCapitalizedText(card.name) } à mão`
-                : `Você não pode adicionar mais de ${getMaxRange} cartas à mão.`"
-              v-b-tooltip.hover
+              @click="canAdd ? addToHand(card) : null"
               class="float-right badge-tip tip">
               <span>
                 <i class="material-icons">control_point</i>
@@ -40,8 +36,6 @@
             </b-badge>
             <b-badge
               @click="removeFromHand(card)"
-              :title="`Remover 1 ${ getCapitalizedText(card.name) } da mão`"
-              v-b-tooltip.hover
               class="float-right badge-tip tip">
               <span>
                 <i class="material-icons">cancel</i>
@@ -83,15 +77,15 @@ export default {
       'setModalVisibility',
     ]),
     addToHand(cardInfo) {
-      if (!this.canAdd) return;
       this.addToPokeList(cardInfo);
     },
     removeFromHand(card) {
-      this.removeFromPokeList(card);
+      const { uuid } = card;
+      this.removeFromPokeList(uuid);
     },
     toggleModal(cardInfo, cardIndex) {
       this.setCardIndex(cardIndex);
-      this.setCardInfo(cardInfo);
+      this.setCardInfo({ cardInfo });
       this.setModalVisibility(true);
       this.setName(cardInfo.name);
     },
