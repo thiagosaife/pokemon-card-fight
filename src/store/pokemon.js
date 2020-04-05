@@ -34,7 +34,7 @@ export default {
           .then((res) => {
             resolve(res.data);
             if (isSearch) {
-              commit('setCardInfo', { cardInfo: res.data, isSearch });
+              commit('setCardInfo', { cardInfo: res.data });
               return;
             }
             commit('addToPokeList', res.data);
@@ -48,9 +48,11 @@ export default {
   mutations: {
     addToPokeList(state, pokemon) {
       const parsedPokemon = JSON.parse(JSON.stringify(pokemon));
-      const uuid = uuidv4();
-      Object.assign(parsedPokemon, { uuid });
-      state.uuid = parsedPokemon.uuid;
+      const { uuid } = parsedPokemon;
+      if (!uuid) {
+        const newUuid = uuidv4();
+        Object.assign(parsedPokemon, { uuid: newUuid });
+      }
       state.pokeList1.unshift(parsedPokemon);
     },
     removeFromPokeList(state, uuid) {
@@ -63,11 +65,10 @@ export default {
     setCardInfo(state, pokemon) {
       const parsedPokemon = JSON.parse(JSON.stringify(pokemon));
       const { cardInfo } = parsedPokemon;
-      const { isSearch } = parsedPokemon;
       const { uuid } = cardInfo;
-      if (!isSearch && !uuid) {
-        const stateUuid = state.uuid;
-        Object.assign(cardInfo, { uuid: stateUuid });
+      if (!uuid) {
+        const newUuid = uuidv4();
+        Object.assign(cardInfo, { uuid: newUuid });
       }
       state.cardInfo = cardInfo;
     },
