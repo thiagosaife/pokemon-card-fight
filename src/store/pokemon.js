@@ -37,12 +37,12 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get(`${path}pokemon/${name}`)
           .then((res) => {
-            resolve(res.data);
             if (isSearch) {
               commit('setCardInfo', { cardInfo: res.data });
               return;
             }
             commit('addToPokeList', res.data);
+            resolve(res.data);
           })
           .catch((err) => {
             reject(err);
