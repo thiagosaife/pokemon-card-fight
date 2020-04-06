@@ -30,12 +30,13 @@
           <b-col cols="6" class="p-0">
             <b-button
               variant="success"
+              @click="createHand"
               type="button"
-              class="mt-3 float-left" @click="createHand">Sortear mão</b-button>
+              class="mt-3 float-left">Sortear mão</b-button>
             <b-button
               v-if="PokeList1.length"
               variant="danger"
-              @click="clearHand()"
+              @click="clearHand"
               type="button"
               class="ml-1 mt-3 float-left">Limpar</b-button>
           </b-col>
