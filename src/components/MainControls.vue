@@ -49,7 +49,7 @@
             </b-input-group>
             <p class="p-1">
               Quantidade de cartas: {{ range }} Pokémons
-              <small>Padrão: {{ defaulRange }} cartas</small>
+              <small>Padrão: {{ getDefaultRange }} cartas</small>
             </p>
           </b-col>
         </b-row>
@@ -65,8 +65,10 @@
               ? `Ver todas (${PokeList1.length})` : `Empilhar cartas (${PokeList1.length})` }}
             <i class="material-icons button-icon">style</i>
           </b-button>
-          <!-- <b-spinner v-if="!loadingHand" class="spinner float-left"
-          type="grow" label="Spinning" /> -->
+          <b-spinner
+            v-if="!loadingHand && !isListLoaderVisible"
+            class="spinner float-left"
+            type="grow" label="Spinning" />
       </b-col>
     </b-row>
   </b-col>
@@ -80,7 +82,6 @@ export default {
   data() {
     return {
       alert: false,
-      defaulRange: 7,
       hand: 0,
       loadingSearch: false,
       name: '',
@@ -94,9 +95,12 @@ export default {
   computed: {
     ...mapGetters([
       'getCardInfo',
+      'getDefaultRange',
       'getMaxRange',
       'getMinRange',
       'getRange',
+      'isListLoaderVisible',
+      'isLengthEqualRange',
       'isStackedCards',
       'PokeList1',
     ]),
@@ -104,7 +108,10 @@ export default {
       return `Sua busca por "${this.name}" não retornou nenhum resultado. Tente consultar a lista de Ids no botão abaixo.`;
     },
     loadingHand() {
-      return this.PokeList1.length === +this.getRange;
+      if (this.isLengthEqualRange) {
+        this.setListLoaderVisibiity(true);
+      }
+      return this.isLengthEqualRange;
     },
     range: {
       get() {
@@ -121,6 +128,7 @@ export default {
     ]),
     ...mapMutations([
       'setCardIndex',
+      'setListLoaderVisibiity',
       'setEmptyPokeList',
       'setModalVisibility',
       'setRange',
@@ -132,6 +140,7 @@ export default {
     createHand() {
       this.alert = false;
       this.name = '';
+      this.setListLoaderVisibiity(false);
       this.setEmptyPokeList();
       const range = +this.range + 1;
       for (let i = 1; i < range; i += 1) {

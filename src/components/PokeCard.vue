@@ -233,6 +233,7 @@ export default {
       'removeFromPokeList',
       'setCardIndex',
       'setCardInfo',
+      'setListLoaderVisibiity',
       'setModalVisibility',
     ]),
     addToHand() {
@@ -258,6 +259,7 @@ export default {
     removeFromHand() {
       const { uuid } = this.cardInfo;
       this.removeFromPokeList(uuid);
+      this.setListLoaderVisibiity(true);
     },
     toggleModal(cardInfo, cardIndex) {
       this.setCardIndex(cardIndex);
