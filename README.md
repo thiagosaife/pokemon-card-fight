@@ -1,9 +1,15 @@
 # PokéFight - ポケファイタ
 
-### This project depends on PokeApi to work properly.
+### This project depends on PokeApi to work properly. You will find no back end here.
 ```
-Please, refer to https://pokeapi.co/ for further information.
+Please, refer to https://pokeapi.co/ for further information on PokeApi.
 It's purpose is just for entertainment and training.
+```
+
+### Code base.
+```
+Vue - https://cli.vuejs.org/
+BootstrapVue - https://bootstrap-vue.js.org/
 ```
 
 ## Project setup
