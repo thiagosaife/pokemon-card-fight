@@ -29,7 +29,7 @@
           <b-row>
             <b-badge
               v-if="canAdd"
-              @click="canAdd ? addToHand(card) : null"
+              @click="addToHand(card)"
               class="float-right badge-tip tip">
               <span>
                 <i class="material-icons">control_point</i>
