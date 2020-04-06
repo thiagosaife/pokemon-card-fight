@@ -40,3 +40,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Contribution
+```
+If you want to contribute, please use gitflow to manage your work. Refer to https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow for further information. You cannot make a pull request direct to master branch, so you can create your own branch like feature, or hotfix.
+```
