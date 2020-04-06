@@ -28,6 +28,7 @@
           :target="`tooltip-cog-stacked-${index}`" triggers="hover">
           <b-row>
             <b-badge
+              v-if="canAdd"
               @click="canAdd ? addToHand(card) : null"
               class="float-right badge-tip tip">
               <span>
@@ -74,6 +75,7 @@ export default {
       'removeFromPokeList',
       'setCardIndex',
       'setCardInfo',
+      'setListLoaderVisibiity',
       'setModalVisibility',
     ]),
     addToHand(cardInfo) {
@@ -82,6 +84,7 @@ export default {
     removeFromHand(card) {
       const { uuid } = card;
       this.removeFromPokeList(uuid);
+      this.setListLoaderVisibiity(true);
     },
     toggleModal(cardInfo, cardIndex) {
       this.setCardIndex(cardIndex);

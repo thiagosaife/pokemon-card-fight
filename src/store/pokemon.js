@@ -7,6 +7,8 @@ export default {
   state: {
     cardIndex: 0,
     cardInfo: {},
+    defaultRange: 7,
+    listLoaderVisible: false,
     maxRange: 12,
     minRange: 1,
     pokeList1: [],
@@ -18,9 +20,12 @@ export default {
   getters: {
     getCardIndex: (state) => state.cardIndex,
     getCardInfo: (state) => state.cardInfo,
+    getDefaultRange: (state) => state.defaultRange,
     getMaxRange: (state) => state.maxRange,
     getMinRange: (state) => state.minRange,
     getRange: (state) => state.range,
+    isLengthEqualRange: (state) => state.pokeList1.length === +state.range,
+    isListLoaderVisible: (state) => state.listLoaderVisible,
     isModalVisible: (state) => state.showModal,
     isStackedCards: (state) => state.stackedCards,
     PokeList1: (state) => state.pokeList1,
@@ -48,11 +53,8 @@ export default {
   mutations: {
     addToPokeList(state, pokemon) {
       const parsedPokemon = JSON.parse(JSON.stringify(pokemon));
-      const { uuid } = parsedPokemon;
-      if (!uuid) {
-        const newUuid = uuidv4();
-        Object.assign(parsedPokemon, { uuid: newUuid });
-      }
+      const uuid = uuidv4();
+      Object.assign(parsedPokemon, { uuid });
       state.pokeList1.unshift(parsedPokemon);
     },
     removeFromPokeList(state, uuid) {
@@ -74,6 +76,9 @@ export default {
     },
     setEmptyPokeList(state) {
       state.pokeList1 = [];
+    },
+    setListLoaderVisibiity(state, isRemove) {
+      state.listLoaderVisible = isRemove;
     },
     setModalVisibility(state) {
       state.showModal = !state.showModal;
