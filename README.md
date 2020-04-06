@@ -1,4 +1,4 @@
-# pokemon
+# PokéFight - ポケファイタ
 
 ### This project depends on PokeApi to work properly.
 ```
